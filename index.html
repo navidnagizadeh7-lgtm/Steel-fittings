@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مدیریت فروش و موجودی استیل</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Tahoma, sans-serif;
+    }
+
+    body {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #d1d5db;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+
+    .card h3 {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .card strong {
+      font-size: 24px;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      background: #111827;
+      color: white;
+      font-size: 15px;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      margin-bottom: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .danger {
+      background: #dc2626;
+    }
+
+    .success {
+      background: #16a34a;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th, td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>مدیریت فروش و موجودی استیل</h1>
+    <p>مدیریت خرید، فروش، موجودی، سود و زیان</p>
+  </header>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>ارزش موجودی</h3>
+      <strong id="inventoryValue">0</strong>
+    </div>
+
+    <div class="card">
+      <h3>فروش کل</h3>
+      <strong id="totalSales">0</strong>
+    </div>
+
+    <div class="card">
+      <h3>سود کل</h3>
+      <strong id="totalProfit">0</strong>
+    </div>
+
+    <div class="card">
+      <h3>تعداد کالا</h3>
+      <strong id="productCount">0</strong>
+    </div>
+
+  </div>
+
+  <div class="menu">
+
+    <button onclick="showSection('products')">
+      کالاها
+    </button>
+
+    <button onclick="showSection('purchase')">
+      ثبت خرید
+    </button>
+
+    <button onclick="showSection('sale')">
+      ثبت فروش
+    </button>
+
+    <button onclick="showSection('inventory')">
+      موجودی
+    </button>
+
+    <button onclick="showSection('reports')">
+      گزارش‌ها
+    </button>
+
+  </div>
+
+  <div id="products" class="section">
+
+    <h2>ثبت کالا</h2>
+
+    <div class="form-grid">
+
+      <input id="productName" placeholder="نام کالا">
+
+      <input id="productGrade" placeholder="گرید مثال: 304 / 316">
+
+      <input id="productSize" placeholder="سایز">
+
+      <input id="productUnit" placeholder="واحد مثال: کیلو / شاخه / برگ">
+
+      <input id="productPrice" type="number" placeholder="قیمت خرید">
+
+    </div>
+
+    <button class="success" onclick="addProduct()">
+      ثبت کالا
+    </button>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>نام</th>
+          <th>گرید</th>
+          <th>سایز</th>
+          <th>واحد</th>
+          <th>قیمت خرید</th>
+        </tr>
+      </thead>
+
+      <tbody id="productTable"></tbody>
+
+    </table>
+
+  </div>
+
+  <div id="purchase" class="section hidden">
+
+    <h2>ثبت خرید</h2>
+
+    <div class="form-grid">
+
+      <select id="purchaseProduct"></select>
+
+      <input id="purchaseQty" type="number" placeholder="تعداد / وزن">
+
+      <input id="purchasePrice" type="number" placeholder="قیمت خرید">
+
+    </div>
+
+    <button class="success" onclick="addPurchase()">
+      ثبت خرید
+    </button>
+
+  </div>
+
+  <div id="sale" class="section hidden">
+
+    <h2>ثبت فروش</h2>
+
+    <div class="form-grid">
+
+      <select id="saleProduct"></select>
+
+      <input id="saleQty" type="number" placeholder="تعداد / وزن">
+
+      <input id="salePrice" type="number" placeholder="قیمت فروش">
+
+    </div>
+
+    <button class="success" onclick="addSale()">
+      ثبت فروش
+    </button>
+
+  </div>
+
+  <div id="inventory" class="section hidden">
+
+    <h2>موجودی کالا</h2>
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>کالا</th>
+          <th>موجودی</th>
+          <th>میانگین قیمت خرید</th>
+          <th>ارزش موجودی</th>
+        </tr>
+
+      </thead>
+
+      <tbody id="inventoryTable"></tbody>
+
+    </table>
+
+  </div>
+
+  <div id="reports" class="section hidden">
+
+    <h2>گزارش مالی</h2>
+
+    <p>
+      فروش کل:
+      <strong id="reportSales">0</strong>
+    </p>
+
+    <br>
+
+    <p>
+      سود کل:
+      <strong id="reportProfit">0</strong>
+    </p>
+
+    <br>
+
+    <button class="danger" onclick="clearData()">
+      پاک کردن تمام اطلاعات
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+let products =
+  JSON.parse(localStorage.getItem("products")) || [];
+
+let purchases =
+  JSON.parse(localStorage.getItem("purchases")) || [];
+
+let sales =
+  JSON.parse(localStorage.getItem("sales")) || [];
+
+
+function saveData() {
+
+  localStorage.setItem(
+    "products",
+    JSON.stringify(products)
+  );
+
+  localStorage.setItem(
+    "purchases",
+    JSON.stringify(purchases)
+  );
+
+  localStorage.setItem(
+    "sales",
+    JSON.stringify(sales)
+  );
+
+}
+
+
+function showSection(id) {
+
+  document
+    .querySelectorAll(".section")
+    .forEach(section => {
+      section.classList.add("hidden");
+    });
+
+  document
+    .getElementById(id)
+    .classList.remove("hidden");
+
+}
+
+
+function addProduct() {
+
+  const name =
+    document.getElementById("productName").value;
+
+  const grade =
+    document.getElementById("productGrade").value;
+
+  const size =
+    document.getElementById("productSize").value;
+
+  const unit =
+    document.getElementById("productUnit").value;
+
+  const price =
+    Number(document.getElementById("productPrice").value);
+
+  if (!name) {
+    alert("نام کالا را وارد کنید");
+    return;
+  }
+
+  products.push({
+
+    id: Date.now(),
+
+    name,
+    grade,
+    size,
+    unit,
+    price
+
+  });
+
+  saveData();
+
+  renderAll();
+
+  document.getElementById("productName").value = "";
+  document.getElementById("productGrade").value = "";
+  document.getElementById("productSize").value = "";
+  document.getElementById("productUnit").value = "";
+  document.getElementById("productPrice").value = "";
+
+}
+
+
+function addPurchase() {
+
+  const productId =
+    Number(document.getElementById("purchaseProduct").value);
+
+  const qty =
+    Number(document.getElementById("purchaseQty").value);
+
+  const price =
+    Number(document.getElementById("purchasePrice").value);
+
+  if (!productId || !qty || !price) {
+
+    alert("اطلاعات خرید را کامل کنید");
+
+    return;
+
+  }
+
+  purchases.push({
+
+    id: Date.now(),
+
+    productId,
+    qty,
+    price
+
+  });
+
+  saveData();
+
+  renderAll();
+
+  alert("خرید ثبت شد");
+
+}
+
+
+function addSale() {
+
+  const productId =
+    Number(document.getElementById("saleProduct").value);
+
+  const qty =
+    Number(document.getElementById("saleQty").value);
+
+  const price =
+    Number(document.getElementById("salePrice").value);
+
+  if (!productId || !qty || !price) {
+
+    alert("اطلاعات فروش را کامل کنید");
+
+    return;
+
+  }
+
+  sales.push({
+
+    id: Date.now(),
+
+    productId,
+    qty,
+    price
+
+  });
+
+  saveData();
+
+  renderAll();
+
+  alert("فروش ثبت شد");
+
+}
+
+
+function renderProducts() {
+
+  const table =
+    document.getElementById("productTable");
+
+  table.innerHTML = "";
+
+  products.forEach(product => {
+
+    const row =
+      document.createElement("tr");
+
+    row.innerHTML = `
+
+      <td>${product.name}</td>
+
+      <td>${product.grade}</td>
+
+      <td>${product.size}</td>
+
+      <td>${product.unit}</td>
+
+      <td>${formatNumber(product.price)}</td>
+
+    `;
+
+    table.appendChild(row);
+
+  });
+
+}
+
+
+function renderSelects() {
+
+  const purchaseSelect =
+    document.getElementById("purchaseProduct");
+
+  const saleSelect =
+    document.getElementById("saleProduct");
+
+  purchaseSelect.innerHTML =
+    '<option value="">انتخاب کالا</option>';
+
+  saleSelect.innerHTML =
+    '<option value="">انتخاب کالا</option>';
+
+  products.forEach(product => {
+
+    const option1 =
+      document.createElement("option");
+
+    option1.value = product.id;
+
+    option1.textContent =
+      `${product.name} - ${product.grade}`;
+
+    purchaseSelect.appendChild(option1);
+
+
+    const option2 =
+      document.createElement("option");
+
+    option2.value = product.id;
+
+    option2.textContent =
+      `${product.name} - ${product.grade}`;
+
+    saleSelect.appendChild(option2);
+
+  });
+
+}
+
+
+function calculateInventory() {
+
+  const inventory = {};
+
+  products.forEach(product => {
+
+    inventory[product.id] = {
+
+      qty: 0,
+
+      value: 0
+
+    };
+
+  });
+
+
+  purchases.forEach(purchase => {
+
+    if (!inventory[purchase.productId]) return;
+
+    inventory[purchase.productId].qty
+      += purchase.qty;
+
+    inventory[purchase.productId].value
+      += purchase.qty * purchase.price;
+
+  });
+
+
+  sales.forEach(sale => {
+
+    if (!inventory[sale.productId]) return;
+
+    inventory[sale.productId].qty
+      -= sale.qty;
+
+  });
+
+
+  return inventory;
+
+}
+
+
+function renderInventory() {
+
+  const table =
+    document.getElementById("inventoryTable");
+
+  table.innerHTML = "";
+
+  const inventory =
+    calculateInventory();
+
+  let totalValue = 0;
+
+
+  products.forEach(product => {
+
+    const item =
+      inventory[product.id];
+
+    if (!item) return;
+
+    const averagePrice =
+      item.qty > 0
+        ? item.value /
+          (item.qty +
+            sales
+              .filter(s => s.productId === product.id)
+              .reduce((sum, s) => sum + s.qty, 0))
+        : 0;
+
+
+    const inventoryValue =
+      item.qty * averagePrice;
+
+    totalValue += inventoryValue;
+
+
+    const row =
+      document.createElement("tr");
+
+    row.innerHTML = `
+
+      <td>
+        ${product.name}
+        ${product.grade}
+      </td>
+
+      <td>${item.qty}</td>
+
+      <td>${formatNumber(averagePrice)}</td>
+
+      <td>${formatNumber(inventoryValue)}</td>
+
+    `;
+
+    table.appendChild(row);
+
+  });
+
+
+  document.getElementById("inventoryValue")
+    .textContent =
+    formatNumber(totalValue);
+
+}
+
+
+function calculateSales() {
+
+  return sales.reduce(
+    (sum, sale) =>
+      sum + sale.qty * sale.price,
+    0
+  );
+
+}
+
+
+function calculateProfit() {
+
+  let profit = 0;
+
+  sales.forEach(sale => {
+
+    const product =
+      products.find(
+        p => p.id === sale.productId
+      );
+
+    if (!product) return;
+
+    profit +=
+      sale.qty *
+      (sale.price - product.price);
+
+  });
+
+  return profit;
+
+}
+
+
+function renderDashboard() {
+
+  const totalSales =
+    calculateSales();
+
+  const totalProfit =
+    calculateProfit();
+
+
+  document.getElementById("totalSales")
+    .textContent =
+    formatNumber(totalSales);
+
+
+  document.getElementById("totalProfit")
+    .textContent =
+    formatNumber(totalProfit);
+
+
+  document.getElementById("reportSales")
+    .textContent =
+    formatNumber(totalSales);
+
+
+  document.getElementById("reportProfit")
+    .textContent =
+    formatNumber(totalProfit);
+
+
+  document.getElementById("productCount")
+    .textContent =
+    products.length;
+
+}
+
+
+function formatNumber(number) {
+
+  return Number(number || 0)
+    .toLocaleString("fa-IR");
+
+}
+
+
+function renderAll() {
+
+  renderProducts();
+
+  renderSelects();
+
+  renderInventory();
+
+  renderDashboard();
+
+}
+
+
+function clearData() {
+
+  const confirmDelete =
+    confirm(
+      "آیا مطمئن هستید که تمام اطلاعات پاک شود؟"
+    );
+
+  if (!confirmDelete) return;
+
+  products = [];
+
+  purchases = [];
+
+  sales = [];
+
+  saveData();
+
+  renderAll();
+
+}
+
+
+renderAll();
+
+</script>
+
+</body>
+</html>
